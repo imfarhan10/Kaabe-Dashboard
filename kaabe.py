@@ -10,7 +10,11 @@ import webbrowser
 import uuid
 from mixpanel import Mixpanel
 
-CONFIG_FILE = "config.txt"
+# -------------------------------------------------------------------------
+# PERMANENT FILE PATH CONFIGURATION (Fixes PyInstaller Single-File Bug)
+# -------------------------------------------------------------------------
+USER_HOME = os.path.expanduser('~')
+CONFIG_FILE = os.path.join(USER_HOME, "kaabe_config.txt")
 
 # -------------------------------------------------------------------------
 # MIXPANEL TELEMETRY CONFIGURATION
@@ -19,9 +23,11 @@ CONFIG_FILE = "config.txt"
 MIXPANEL_TOKEN = "5e1d74ec084e78b8e8abf6cd6502b60d"
 mp = Mixpanel(MIXPANEL_TOKEN)
 
+
+
 def track_anonymous_usage():
     """Generates a unique hardware ID to track active users and app launches completely anonymously."""
-    id_file = "user_id.txt"
+    id_file = os.path.join(USER_HOME, "kaabe_user_id.txt")
     
     # 1. Read or generate a unique random ID for this specific machine
     if os.path.exists(id_file):
@@ -728,6 +734,7 @@ def browse_file():
         run_file_btn.config(command=lambda: run_file_automation(filepath))
 
 
+# ALWAYS grab/set configurations first before drawing the workspace view
 ACTIVE_USER_NAME = get_or_set_user_name()
 
 root = tk.Tk()
@@ -735,7 +742,6 @@ root.title("Kaabe Dashboard")
 root.geometry("860x490") 
 root.resizable(False, False)
 
-# Initialize global tracking variables before constructing widgets
 theme_var = tk.BooleanVar(value=True) 
 
 style = ttk.Style(root)
